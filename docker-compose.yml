@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./wallet
+    ports:
+      - "8080:8080"
+    environment:
+      # Загружаем переменные окружения из config.env
+      # Используем имя сервиса 'db' для хоста БД внутри контейнера
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      HTTP_PORT: ${HTTP_PORT}
+    depends_on:
+      - db
+    env_file:
+      - ./wallet/config.env # Указываем путь к config.env
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Опционально, если хочешь подключаться к БД напрямую с хоста
+
+volumes:
+  db_data:

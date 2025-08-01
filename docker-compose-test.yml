@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  test_db:
+    image: postgres:16-alpine
+    container_name: test_task_wallet_test_db
+    environment:
+      POSTGRES_DB: test_wallet_db     # Имя тестовой базы данных
+      POSTGRES_USER: testuser         # Пользователь для тестов
+      POSTGRES_PASSWORD: testpassword # Пароль для тестов
+    ports:
+      - "5433:5432" # Прокидываем порт 5432 внутри контейнера на 5433 на хосте, чтобы избежать конфликтов
+    volumes:
+      - test_db_data:/var/lib/postgresql/data # Используем отдельный том для тестовой БД
+
+volumes:
+  test_db_data:
